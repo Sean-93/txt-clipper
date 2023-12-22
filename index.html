@@ -2,19 +2,20 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="TXT Clipper- remove lines from TXT files">
+    <meta name="description" content="TXT file line clipper- remove lines from TXT files">
     <meta name="keywords" content="TXT file, remove lines from TXT file, txt line clipper">
     <meta name="author" content="Developed by Sean Rooney">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <title>&#9988; &#128221; TXT Clipper</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
 </head>
 
 <body>
     <h1>&#9988; &#128221; TXT Clipper, a Bulk TXT File Line Remover</h1>
 
     <p>Add the .txt files you want to remove lines from. Then select the range of lines you want to remove.</p>
-    <p>You may then download the new files after the lines have been removed.</p>
+    <p>You can download a ZIP file containing the new files after the lines have been removed.</p>
 
     <input type="file" id="fileInput" multiple accept=".txt">
     <br />
@@ -27,7 +28,7 @@
     <input type="number" id="endLine" min="1">
     <br />
 
-    <button onclick="processFiles()">Remove Lines from All Files</button>
+    <button onclick="processFiles()">Remove Lines and Download ZIP</button>
     <br />
 
     <div id="downloadLinks"></div>
@@ -37,12 +38,14 @@
             const fileInput = document.getElementById('fileInput');
             const startLine = parseInt(document.getElementById('startLine').value);
             const endLine = parseInt(document.getElementById('endLine').value);
-            const downloadLinks = document.getElementById('downloadLinks');
+            const zip = new JSZip();
 
             if (fileInput.files.length == 0) {
                 alert('Please select at least one file.');
                 return;
             }
+
+            let filesProcessed = 0;
 
             Array.from(fileInput.files).forEach(file => {
                 const reader = new FileReader();
@@ -55,15 +58,18 @@
                     });
 
                     const newFileContent = filteredLines.join('\n');
-                    const blob = new Blob([newFileContent], { type: 'text/plain' });
-                    const url = window.URL.createObjectURL(blob);
+                    zip.file(file.name, newFileContent);
+                    filesProcessed++;
 
-                    const downloadLink = document.createElement('a');
-                    downloadLink.href = url;
-                    downloadLink.download = 'modified_' + file.name;
-                    downloadLink.innerText = 'Download ' + file.name;
-                    downloadLinks.appendChild(downloadLink);
-                    downloadLinks.appendChild(document.createElement('br'));
+                    if(filesProcessed === fileInput.files.length) {
+                        zip.generateAsync({type:"blob"}).then(function(content) {
+                            const downloadLink = document.createElement('a');
+                            downloadLink.href = window.URL.createObjectURL(content);
+                            downloadLink.download = 'modified_files.zip';
+                            downloadLink.innerText = 'Download ZIP';
+                            document.getElementById('downloadLinks').appendChild(downloadLink);
+                        });
+                    }
                 };
 
                 reader.readAsText(file);
