@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="TXT Clipper- remove lines from TXT files">
+    <meta name="keywords" content="TXT file, remove lines from TXT file, txt line clipper">
+    <meta name="author" content="Developed by Sean Rooney">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <title>&#9988; &#128221; TXT Clipper</title>
+</head>
+
+<body>
+    <h1>&#9988; &#128221; TXT Clipper, a Bulk TXT File Line Remover</h1>
+
+    <p>Add the .txt files you want to remove lines from. Then select the range of lines you want to remove.</p>
+    <p>You may then download the new files after the lines have been removed.</p>
+
+    <input type="file" id="fileInput" multiple accept=".txt">
+    <br />
+
+    <label for="startLine">Start Line:</label>
+    <input type="number" id="startLine" min="1">
+    <br />
+
+    <label for="endLine">End Line:</label>
+    <input type="number" id="endLine" min="1">
+    <br />
+
+    <button onclick="processFiles()">Remove Lines from All Files</button>
+    <br />
+
+    <div id="downloadLinks"></div>
+
+    <script>
+        function processFiles() {
+            const fileInput = document.getElementById('fileInput');
+            const startLine = parseInt(document.getElementById('startLine').value);
+            const endLine = parseInt(document.getElementById('endLine').value);
+            const downloadLinks = document.getElementById('downloadLinks');
+
+            if (fileInput.files.length == 0) {
+                alert('Please select at least one file.');
+                return;
+            }
+
+            Array.from(fileInput.files).forEach(file => {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const lines = e.target.result.split('\n');
+                    const filteredLines = lines.filter((line, index) => {
+                        // Adjust for zero-based index
+                        return index < startLine - 1 || index > endLine - 1;
+                    });
+
+                    const newFileContent = filteredLines.join('\n');
+                    const blob = new Blob([newFileContent], { type: 'text/plain' });
+                    const url = window.URL.createObjectURL(blob);
+
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = url;
+                    downloadLink.download = 'modified_' + file.name;
+                    downloadLink.innerText = 'Download ' + file.name;
+                    downloadLinks.appendChild(downloadLink);
+                    downloadLinks.appendChild(document.createElement('br'));
+                };
+
+                reader.readAsText(file);
+            });
+        }
+    </script>
+</body>
+</html>
