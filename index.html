@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="TXT file line clipper- remove lines from TXT files">
     <meta name="keywords" content="TXT file, remove lines from TXT file, txt line clipper">
     <meta name="author" content="Developed by Sean Rooney">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <!-- DARK VER. WATER CSS CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
     <title>&#9988; &#128221; TXT Clipper</title>
+    <!-- JSZIP LIB CDN  -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
 </head>
 
 <body>
-    <h1>&#9988; &#128221; TXT Clipper, a Bulk TXT File Line Remover</h1>
+    <header>
+        <h1>&#9988; &#128221; TXT Clipper, a Bulk TXT File Line Remover</h1>
 
-    <p>Add the .txt files you want to remove lines from. Then select the range of lines you want to remove.</p>
-    <p>You can download a ZIP file containing the new files after the lines have been removed.</p>
+        <p>Add the .txt files you want to remove lines from, then select the range of lines you want to remove.</p>
+        <p>You can download a ZIP file containing the new files after the lines have been removed.</p>
+    </header>
+    <br />
 
     <input type="file" id="fileInput" multiple accept=".txt">
     <br />
@@ -32,6 +38,63 @@
     <br />
 
     <div id="downloadLinks"></div>
+
+    <footer>
+        <h2>About TXT Clipper</h2>
+        <p>TXT Clipper is a web-based tool designed for bulk removal of specific line ranges from multiple
+            <code>.txt</code>
+            files. It processes files entirely client-side, ensuring data privacy and security.
+        </p>
+
+        <h2>Features</h2>
+        <ul>
+            <li><strong>Bulk Processing</strong>: Remove lines from multiple <code>.txt</code> files simultaneously.
+            </li>
+            <li><strong>Client-Side Execution</strong>: All processing is done locally in your browser; no data is sent
+                over
+                the network.</li>
+            <li><strong>Custom Line Range</strong>: Specify the start and end lines for removal.</li>
+            <li><strong>Downloadable Results</strong>: Each processed file can be individually downloaded after
+                processing.
+            </li>
+        </ul>
+
+        <h2>Usage</h2>
+        <ol>
+            <li><strong>Upload Files</strong>: Click on the file input area to select and upload multiple
+                <code>.txt</code>
+                files.
+            </li>
+            <li><strong>Set Line Range</strong>: Enter the start and end line numbers for the range you wish to remove
+                from
+                each file.</li>
+            <li><strong>Process Files</strong>: Click the 'Remove Lines from All Files' button to start processing.</li>
+            <li><strong>Download Files</strong>: Click on the generated download links to save each modified file.</li>
+        </ol>
+
+        <h2>Requirements</h2>
+        <ul>
+            <li>A modern web browser (e.g., Chrome, Firefox, Safari, Edge).</li>
+            <li>Local <code>.txt</code> files to be processed.</li>
+        </ul>
+
+        <h2>Security and Privacy</h2>
+        <ul>
+            <li>The tool runs entirely in your browser; it does not store or transmit your data externally.</li>
+            <li>File processing is transient, with no persistent storage or memory of file content after the browser tab
+                is
+                closed.</li>
+        </ul>
+
+        <h2>Limitations</h2>
+        <ul>
+            <li>Designed primarily for plain text <code>.txt</code> files.</li>
+            <li>Large files may impact performance due to client-side processing limitations.</li>
+        </ul>
+
+        <h2>License</h2>
+        <p>This tool is provided 'as is', without warranty of any kind, express or implied. Use at your own risk.</p>
+    </footer>
 
     <script>
         function processFiles() {
@@ -61,8 +124,8 @@
                     zip.file(file.name, newFileContent);
                     filesProcessed++;
 
-                    if(filesProcessed === fileInput.files.length) {
-                        zip.generateAsync({type:"blob"}).then(function(content) {
+                    if (filesProcessed === fileInput.files.length) {
+                        zip.generateAsync({ type: "blob" }).then(function (content) {
                             const downloadLink = document.createElement('a');
                             downloadLink.href = window.URL.createObjectURL(content);
                             downloadLink.download = 'modified_files.zip';
@@ -77,4 +140,5 @@
         }
     </script>
 </body>
+
 </html>
